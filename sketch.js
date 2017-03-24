@@ -38,11 +38,23 @@ function draw () {
   rect(xdiff/2 + xstep * 3, ydiff/2 + ystep * 0, size, size);
 
   stroke(0);
-  noFill();
   // Represent red here
+  fill(0);
+  stroke(0);
   rect(xdiff/2 + xstep * 0, ydiff/2 + ystep * 1, size, size);
+  translate(xdiff/2 + xstep * 0, ydiff/2 + ystep * 1);
+  fill(255);
+  triangle(15, 155, 100, 40, 185, 155);
+  fill(101);
+  triangle(25, 150, 100, 50, 175, 150);
+  fill(255);
+  ellipse(100, 95, 15, 40);
+  ellipse(100, 130, 15, 15);
+  
 
 
+  resetMatrix();
+  fill(255);
   // Represent yellow here
   rect(xdiff/2 + xstep * 1, ydiff/2 + ystep * 1, size, size);
   noStroke();
