@@ -62,32 +62,34 @@ function draw () {
   resetMatrix();
 
   // Represent blue here
-  fill(0);
+  fill(255);
   stroke(0);
   rect(xdiff/2 + xstep * 2, ydiff/2 + ystep * 1, size, size);
   translate(xdiff/2 + xstep * 2, ydiff/2 + ystep * 1);
+  strokeWeight(3);
   fill(200);
-  arc(100, 100, 100, 100, 0, PI, PIE);
+  arc(100, 100, 150, 150, 0, PI, PIE);
   fill(245);
-  arc(100, 100, 100, 100, PI, 0, PIE);
+  arc(100, 100, 150, 150, PI, 0, PIE);
   fill(200, 200, 200, 127);
-  ellipse(100, 100, 50, 100);
+  ellipse(100, 100, 75, 148);
   noFill();
-  arc(100, 50, 100, 50, 0+(QUARTER_PI/2), PI-(QUARTER_PI/2), OPEN);
-  arc(100, 150, 100, 50, PI+(QUARTER_PI/2), 0-(QUARTER_PI/2), OPEN);
+  arc(100, 26, 150, 75, 0+(QUARTER_PI/2), PI-(QUARTER_PI/2), OPEN);
+  arc(100, 174, 150, 75, PI+(QUARTER_PI/2), 0-(QUARTER_PI/2), OPEN);
   
 
   resetMatrix();
   noFill();
   stroke(0);
+  strokeWeight(1);
   rect(xdiff/2 + xstep * 3, ydiff/2 + ystep * 1, size, size);
   translate(xdiff/2 + xstep * 3, ydiff/2 + ystep * 1);
   noStroke();
-  for($i = 0; $i < 16; $i++){
+  for($i = 0; $i < 4; $i++){
     drawTree();
-    translate(50, 0);
-    if($i % 4== 3){
-      translate(-200, 49);
+    translate(100, 0);
+    if($i % 2 == 1){
+      translate(-200, 100);
     }
   }
 
@@ -104,9 +106,9 @@ function keyTyped() {
 
 function drawTree(){
   fill(153, 153, 153, 127);
-  triangle(15, 15, 25, 0, 35, 15);
-  triangle(10, 25, 25, 7, 40, 25);
-  triangle(5, 35, 25, 14, 45, 35);
-  triangle(0, 45, 25, 21, 50, 45);
-  rect(22, 44, 6, 10);
+  triangle(30, 30, 50, 0, 70, 30);
+  triangle(20, 50, 50, 14, 80, 50);
+  triangle(10, 70, 50, 28, 90, 70);
+  triangle(0, 90, 50, 42, 100, 90);
+  rect(44, 78, 12, 20);
 }
