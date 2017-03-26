@@ -89,10 +89,16 @@ function drawRedRepresentation(){
 		'y3': [0, 0, 0, 0, 37.5, 87.5, 137.5, 187.5, 200, 200, 200, 200, 187.5, 137.5, 87.5, 37.5 ]
 	}
 	noStroke();
+	fill(255, 255, 255, 191);
+	ellipse(100, 100, 30, 30);
 	fill(255);
+	
 	
 	//draw circle in the center
 	ellipse(100, 100, 20, 20);
+	
+	fill(0);
+	ellipse(100, 100, 5, 5);
 	
 	fill(255, 255, 255, 159);
 	
