@@ -22,71 +22,60 @@ function draw_shape(column, row, size, cur_color) {
 
   if (row === 0) {
     // hue
-    var stroke_w = map(column, 0, 4, 1, 3);
-    strokeWeight(stroke_w);
-    rect(half_size-rect_width/2, half_size-20, rect_width, 40, 20);
+    angleMode(degrees);
+    //this array is used to set the level of opacity for the trianles and largest ellipse
+    var opacityLevel = [15, 31, 47, 63, 79];
+    //this variable is used to reduce the width of triangles that create the rays of the sun
+    var triWidthReducer = 2;
+    //this variable is used to increase the size of the elipses in the center
+    var scaleMultiplier = 2;
   }
   else if (row === 1) {
     // saturation
-    // var rect_width = map(column, 0, 4, 10, 80);
-    // rect(half_size-rect_width/2, half_size-20, rect_width, 40, 20);
-    var positions = {
-      'x1': [6, 35.5, 65, 94.5, 120, 120, 120, 120, 94.5, 65, 35.5, 6, 0, 0, 0, 0], 
-      'x3': [25.5, 55, 84.5, 114, 120, 120, 120, 120, 114, 84.5, 55, 25.5, 0, 0, 0, 0],
-      'y1': [0, 0, 0, 0, 6, 35.5, 65, 94.5, 120, 120, 120, 120, 94.5, 65, 35.5, 6],
-      'y3': [0, 0, 0, 0, 25.5, 55, 84.5, 114, 120, 120, 120, 120, 114, 84.5, 55, 25.5]
-    }
-    var scaleMultiplier = map(column, 0, 4, 4, 0);
-    noStroke();
-    fill(255, 255, 255, 47);
-    ellipse(60, 60, 25 * scaleMultiplier, 25 * scaleMultiplier);
-    fill(255);
-    
-    
-    //draw circle in the center
-    ellipse(60, 60, 15 * scaleMultiplier, 15 * scaleMultiplier);
-    
-    fill(0);
-    ellipse(60, 60, 10 * scaleMultiplier, 10 * scaleMultiplier);
-    
-    
-    fill(255, 255, 255, 47);
-    //draw 16 triangles from the center of the square to the edge 
-    for($i = 0; $i < 16; $i++){
-      triangle(positions['x1'][$i], positions['y1'][$i], 60, 60, positions['x3'][$i], positions['y3'][$i]);
-    }
+    //this array is used to set the level of opacity for the trianles and largest ellipse
+    var opacityLevel = [47, 47, 47, 47, 47];
+    //this variable is used to reduce the width of triangles that create the rays of the sun
+    var triWidthReducer = 2;
+    //this variable is used to increase the size of the elipses in the center
+    var scaleMultiplier = map(column, 0, 4, 6, 2);
   }
   else {
     // lightness
-    // var fill_col = map(column, 0, 4, 30, 90);
-    // fill(fill_col);
-    // rect(half_size-rect_width/2, half_size-20, rect_width, 40, 20);
-    //x and y positions for the 16 triangles
-    var positions = {
-      'x1': [6, 35.5, 65, 94.5, 120, 120, 120, 120, 94.5, 65, 35.5, 6, 0, 0, 0, 0], 
-      'x3': [25.5, 55, 84.5, 114, 120, 120, 120, 120, 114, 84.5, 55, 25.5, 0, 0, 0, 0],
-      'y1': [0, 0, 0, 0, 6, 35.5, 65, 94.5, 120, 120, 120, 120, 94.5, 65, 35.5, 6],
-      'y3': [0, 0, 0, 0, 25.5, 55, 84.5, 114, 120, 120, 120, 120, 114, 84.5, 55, 25.5]
-    }
-    var opacityLevel = [15, 31, 47, 63, 79];
-    noStroke();
-    fill(255, 255, 255, opacityLevel[column]);
-    ellipse(60, 60, 25, 25);
-    fill(255);
-    
-    
-    //draw circle in the center
-    ellipse(60, 60, 15, 15);
-    
-    fill(0);
-    ellipse(60, 60, 10, 10);
-    
-    
-    fill(255, 255, 255, opacityLevel[column]);
-    //draw 16 triangles from the center of the square to the edge 
-    for($i = 0; $i < 16; $i++){
-      triangle(positions['x1'][$i], positions['y1'][$i], 60, 60, positions['x3'][$i], positions['y3'][$i]);
-    }
+    //this array is used to set the level of opacity for the trianles and largest ellipse
+    var opacityLevel = [47, 47, 47, 47, 47];
+    //this variable is used to reduce the width of triangles that create the rays of the sun
+    var triWidthReducer = map(column, 0, 4, 6, -2);
+    //this variable is used to increase the size of the elipses in the center
+    var scaleMultiplier = 2;
+  }
+
+
+  //x and y positions for the 16 triangles
+  var positions = {
+    'x1': [6 + triWidthReducer, 35.5 + triWidthReducer, 65 + triWidthReducer, 94.5 + triWidthReducer, 120, 120, 120, 120, 94.5 + triWidthReducer, 65 + triWidthReducer, 35.5 + triWidthReducer, 6 + triWidthReducer, 0, 0, 0, 0],
+    'x3': [25.5 - triWidthReducer, 55 - triWidthReducer, 84.5 - triWidthReducer, 114 - triWidthReducer, 120, 120, 120, 120, 114 - triWidthReducer, 84.5 - triWidthReducer, 55 - triWidthReducer, 25.5 - triWidthReducer, 0, 0, 0, 0],
+    'y1': [0, 0, 0, 0, 6 + triWidthReducer, 35.5 + triWidthReducer, 65 + triWidthReducer, 94.5 + triWidthReducer, 120, 120, 120, 120, 94.5 + triWidthReducer, 65 + triWidthReducer, 35.5 + triWidthReducer, 6 + triWidthReducer],
+    'y3': [0, 0, 0, 0, 25.5 - triWidthReducer, 55 - triWidthReducer, 84.5 - triWidthReducer, 114 - triWidthReducer, 120, 120, 120, 120, 114 - triWidthReducer, 84.5 - triWidthReducer, 55 - triWidthReducer, 25.5 - triWidthReducer]
+  }
+  //circles to represent the sun
+  noStroke();
+  //outer circle
+  fill(255, 255, 255, opacityLevel[column]);
+  ellipse(60, 60, 12 * scaleMultiplier, 12 * scaleMultiplier);
+
+  //middle circle
+  fill(255);
+  ellipse(60, 60, 6 * scaleMultiplier, 6 * scaleMultiplier);
+
+  //inner circle
+  fill(0);
+  ellipse(60, 60, 3 * scaleMultiplier, 3 * scaleMultiplier);
+
+  //triangles to represent the sun rays
+  //draw 16 triangles from the center of the square to the edge
+  fill(255, 255, 255, opacityLevel[column]);
+  for($i = 0; $i < 16; $i++){
+    triangle(positions['x1'][$i], positions['y1'][$i], 60, 60, positions['x3'][$i], positions['y3'][$i]);
   }
 }
 
@@ -95,6 +84,8 @@ function draw_shape(column, row, size, cur_color) {
 // var my_color = "rgb(245, 225, 50)"
 //var my_color = "rgb(20%, 47%, 67%)"
 var my_color = "rgb(210, 70, 50)"
+var my_color = "rgb(100%, 90%, 50%)"
+var my_color = "rgb(208, 11, 11)"
 
 var shapes_should_draw = true;
 
