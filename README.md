@@ -1,11 +1,13 @@
 ## PS2 MDDN 242 2017
 
-### Color Glyphs
+### Color Glyphs - Interpolate
 
-I have chosen green as my colour and have used three trees to create a miniature forest as my monochrome representation.
+I was very happy with the representation I had already created for the colour red so I decided to use the same glyph for this part of the assignment.
 
-To represent the colour blue I was inspired by the ocean and combined arcs and ellipses to create a globe.
+The three dimensions have been interpolated in the following ways:
 
-For the colour yellow I created a pattern (from ellipses) that I perceive in different ways, sometimes I see a flower and sometimes I see the sun.
+Hue determines the opacity level used for the fill colour of the triangles and outer circle.
 
-My representation of the colour red is inspired by the rising sun flag from Japan. There is a circle at the center and 16 triangles which grow from out of this. 
+Saturation determines how small the circles in the center of the square are. The smaller the circles are the less pure the colour.
+
+Lightness determines how wide the triangles will be. Maximum lightness creates triangles so wide they almost fill the square.
