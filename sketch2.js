@@ -19,34 +19,29 @@ function draw_shape(column, row, size, cur_color) {
   fill(60);
   strokeWeight(2);
   var rect_width = 60;
-
+  //this array will be used to set the level of opacity for the trianles and largest ellipse
+  var opacityLevel = [47, 47, 47, 47, 47];
+  //this variable will be used to reduce the width of triangles that create the rays of the sun
+  var triWidthReducer = 2;
+  //this variable will be used to increase the size of the elipses in the center
+  var scaleMultiplier = 2;
   if (row === 0) {
     // hue
-    angleMode(degrees);
-    //this array is used to set the level of opacity for the trianles and largest ellipse
-    var opacityLevel = [15, 31, 47, 63, 79];
-    //this variable is used to reduce the width of triangles that create the rays of the sun
-    var triWidthReducer = 2;
-    //this variable is used to increase the size of the elipses in the center
-    var scaleMultiplier = 2;
+    opacityLevel = [15, 31, 47, 63, 79];
+    triWidthReducer = 2;
+    scaleMultiplier = 2;
   }
   else if (row === 1) {
     // saturation
-    //this array is used to set the level of opacity for the trianles and largest ellipse
-    var opacityLevel = [47, 47, 47, 47, 47];
-    //this variable is used to reduce the width of triangles that create the rays of the sun
-    var triWidthReducer = 2;
-    //this variable is used to increase the size of the elipses in the center
-    var scaleMultiplier = map(column, 0, 4, 6, 2);
+    opacityLevel = [47, 47, 47, 47, 47];
+    triWidthReducer = 2;
+    scaleMultiplier = map(column, 0, 4, 6, 2);
   }
   else {
     // lightness
-    //this array is used to set the level of opacity for the trianles and largest ellipse
-    var opacityLevel = [47, 47, 47, 47, 47];
-    //this variable is used to reduce the width of triangles that create the rays of the sun
-    var triWidthReducer = map(column, 0, 4, 6, -2);
-    //this variable is used to increase the size of the elipses in the center
-    var scaleMultiplier = 2;
+    opacityLevel = [47, 47, 47, 47, 47];
+    triWidthReducer = map(column, 0, 4, 6, -2);
+    scaleMultiplier = 2;
   }
 
 
@@ -83,8 +78,9 @@ function draw_shape(column, row, size, cur_color) {
 // var my_color = "#d24632"
 // var my_color = "rgb(245, 225, 50)"
 //var my_color = "rgb(20%, 47%, 67%)"
-var my_color = "rgb(210, 70, 50)"
-var my_color = "rgb(100%, 90%, 50%)"
+
+//the base colour I have chosen, a slight variation
+//of the red colour from the previous part of the assignment
 var my_color = "rgb(208, 11, 11)"
 
 var shapes_should_draw = true;
