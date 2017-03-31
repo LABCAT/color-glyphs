@@ -8,20 +8,39 @@ function gray_glyph(values, size) {
 
   // map brightness to large circle shade
   var color1 = map(values[2], 0, 100, 10, 70)
-  stroke(color1);
-  fill(color1)
-  var s2 = size/2;
-  ellipse(s2, s2, size);
+  //stroke(color1);
+  fill(0);
+  var center = size/2;
+  ellipse(center, center, size);
 
   // inner size is set to 30%
   var inner_size = 0.2 + 0.4 * 0.3;
   var s3 = size * inner_size;
-
   // inner color based on saturation
   var color2 = map(values[1], 0, 100, color1+20, 240)
   fill(color2);
   stroke(color2);
 
+  console.debug(values[2]);
+  //saturation dimension
+  var saturation = map(values[1], 0, 100, 0, size)
+
+  //brightness dimension
+  var brightnessTop = map(values[2], 0, 100, center, 0);
+  var brightnessBottom = map(values[2], 0, 100, center, size);
+
+
+  //outer circle
+  fill(255, 255, 255, 47);
+  ellipse(center, center, saturation);
+
+  //middle circle
+  fill(255);
+  ellipse(center, center, saturation / 2);
+
+  //inner circle
+  fill(0);
+  ellipse(center, center, saturation / 4);
   
   //print('values = ' + values);
   //print('values[0] = ' + values[0]);
@@ -31,55 +50,55 @@ function gray_glyph(values, size) {
   var max_shift = 0.5 * (size - s3);
   //print('max_shift = ' + max_shift);
   var x_shift = shift_frac * max_shift;
-  //ellipse(s2 + x_shift, s2, s3);  
+  //ellipse(center + x_shift, center, s3);  
 
   //translate to the center of the square
   //translate(100, 100);
-  rectMode(CENTER);
-  var s4 = s2 - s3;
+  var s4 = center - s3;
   //x and y positions for the 16 triangles
   var positions = {
     'x1': [
-            s2 + x_shift - size/64,
-            s2 + x_shift,
-            s2 + x_shift - size/64,
-            s2 + x_shift
+            center - size/64,
+            brightnessBottom,
+            center - size/64,
+            brightnessTop
           ],
     'y1': [
-            s2,
-            s2 - size/64,
-            s2,
-            s2 - size/64
+            brightnessTop,
+            center - size/64,
+            brightnessBottom,
+            center - size/64
           ],
     'x2': [
-            s2 + x_shift,
-            s2 + x_shift - s4,
-            s2 + x_shift,
-            s2 + x_shift + s4
+            center,
+            center,
+            center,
+            center
           ],
     'y2': [
-            s3,
-            s2,
-            s3 + (s4 * 2),
-            s2
+            center,
+            center,
+            center,
+            center
           ],
     'x3': [
-            s2 + x_shift + size/64,
-            s2 + x_shift,
-            s2 + x_shift + size/64,
-            s2 + x_shift
+            center + size/64,
+            brightnessBottom,
+            center + size/64,
+            brightnessTop
           ],
     'y3': [
-            s2,
-            s2 + size/64,
-            s2,
-            s2 + size/64
+            brightnessTop,
+            center + size/64,
+            brightnessBottom,
+            center + size/64
           ]
   }
   //draw 16 circles, rotating a 16th each time
-  //print('s2 = ' + s2);
+  //print('center = ' + center);
   //print("  x_shift = " + x_shift);
-  
+  fill(255, 255, 255, 127);
+  noStroke(); 
   for($i = 0; $i < 4; $i++){
     triangle(positions['x1'][$i], positions['y1'][$i], positions['x2'][$i], positions['y2'][$i], positions['x3'][$i], positions['y3'][$i]);
   }
