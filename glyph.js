@@ -21,13 +21,17 @@ function gray_glyph(values, size) {
   fill(color2);
   stroke(color2);
 
-  console.debug(values[2]);
+  //hue dimension
+  var hueMin = map(values[0], 0, 360, center, 0);
+  var hueMax = map(values[0], 0, 360, center, size);
+  
   //saturation dimension
-  var saturation = map(values[1], 0, 100, 0, size)
+  var saturation = map(values[1], 0, 100, size, 0)
 
-  //brightness dimension
-  var brightnessTop = map(values[2], 0, 100, center, 0);
-  var brightnessBottom = map(values[2], 0, 100, center, size);
+  //hue dimension
+  var brightnessMin = map(values[2], 0, 100, center, (0 + size/8 + size/32));
+  var brightnessMax = map(values[2], 0, 100, center, (size - size/8 - size/32));
+  
 
 
   //outer circle
@@ -35,7 +39,7 @@ function gray_glyph(values, size) {
   ellipse(center, center, saturation);
 
   //middle circle
-  fill(255);
+  fill(255, 255, 255, 159);
   ellipse(center, center, saturation / 2);
 
   //inner circle
@@ -58,48 +62,75 @@ function gray_glyph(values, size) {
   //x and y positions for the 16 triangles
   var positions = {
     'x1': [
-            center - size/64,
-            brightnessBottom,
-            center - size/64,
-            brightnessTop
+            center - size/32,
+            center - size/32,
+            center,
+            center + size/32,
+            center - size/32,
+            center - size/32,
+            center,
+            center + size/32,
           ],
     'y1': [
-            brightnessTop,
-            center - size/64,
-            brightnessBottom,
-            center - size/64
+            center,
+            center - size/32,
+            center - size/32,
+            center - size/32,
+            center,
+            center - size/32,
+            center - size/32,
+            center - size/32
           ],
     'x2': [
             center,
+            brightnessMax,
+            hueMax,
+			brightnessMax,
             center,
-            center,
-            center
+            brightnessMin,
+            hueMin,
+            brightnessMin
           ],
     'y2': [
+            hueMin,
+            brightnessMin,
             center,
+			brightnessMax,
+            hueMax,
+            brightnessMax,
             center,
-            center,
-            center
+            brightnessMin
           ],
     'x3': [
-            center + size/64,
-            brightnessBottom,
-            center + size/64,
-            brightnessTop
+            center + size/32,
+            center + size/32,
+            center,
+            center - size/32,
+            center + size/32,
+            center + size/32,
+            center,
+            center - size/32
           ],
     'y3': [
-            brightnessTop,
-            center + size/64,
-            brightnessBottom,
-            center + size/64
+            center,
+            center + size/32,
+            center + size/32,
+            center + size/32,
+            center,
+            center + size/32,
+            center + size/32,
+            center + size/32
           ]
   }
+   
+
   //draw 16 circles, rotating a 16th each time
   //print('center = ' + center);
   //print("  x_shift = " + x_shift);
   fill(255, 255, 255, 127);
+  //fill(255, 0, 0);
   noStroke(); 
-  for($i = 0; $i < 4; $i++){
+  for($i = 0; $i < 16; $i++){
     triangle(positions['x1'][$i], positions['y1'][$i], positions['x2'][$i], positions['y2'][$i], positions['x3'][$i], positions['y3'][$i]);
   }
 }
