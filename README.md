@@ -1,13 +1,9 @@
 ## PS2 MDDN 242 2017
 
-### Color Glyphs - Interpolate
+### Color Glyphs - Glyph System
 
-I was very happy with the representation I had already created for the colour red so I decided to use the same glyph for this part of the assignment.
+I decided that my glyph system would be inspired by the interpolation part of the assignment.  
 
-The three dimensions have been interpolated in the following ways:
+The glyphs had been designed for a square shaped area and didn't fit within the circle area. This meant I had to adjust the design in order to stay within the guidelines. As a result of this the glyph looks quite different than it did originally. However, visually it is still apparent that this glyph system is thematically related to the glyphs from the interpolation part of the assignment.  
 
-Hue determines the opacity level used for the fill colour of the triangles and outer circle.
-
-Saturation determines how small the circles in the center of the square are. The smaller the circles are the less pure the colour.
-
-Lightness determines how wide the triangles will be. Maximum lightness creates triangles so wide they almost fill the square.
+I have thoroughly tested my glyph system and it works really well. When in oddball mode it is usually very easy to find the glyph that is not matching. 
