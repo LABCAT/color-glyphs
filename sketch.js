@@ -409,7 +409,7 @@ function drawDriveMode() {
 
   resetMatrix();
   translate(middle_x + halfSize + 32, middle_y - halfSize);
-  color_glyph(val, glyphSize);
+  color_glyph.draw(val, glyphSize);
 }
 
 function drawGridMode() {
