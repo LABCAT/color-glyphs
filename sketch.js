@@ -10,7 +10,19 @@ var oddball_col = 0;
 
 var val_sliders = [];
 var max_vals = [360, 100, 100];
-function setup () {
+
+var curEmoji = 76;
+var NUM_EMOJI = 872;
+var EMOJI_WIDTH = 38;
+
+var emojiImg;
+var curEmojiImg;
+var curEmojiPixels;
+function preload() {
+  emojiImg = loadImage("twemoji36b_montage.png");
+}
+
+function setup() {
   // create the drawing canvas, save the canvas element
   var main_canvas = createCanvas(canvasWidth, canvasHeight);
   main_canvas.parent('canvasContainer');
@@ -28,26 +40,28 @@ function setup () {
   modeSelector = createSelect();
   modeSelector.option('drive');
   modeSelector.option('gradient');
-  // modeSelector.option('analogy');
   modeSelector.option('random_grid');
   modeSelector.option('oddball');
+  modeSelector.option('image');
   modeSelector.changed(modeChangedEvent);
-  modeSelector.value('oddball');
+  modeSelector.value('image');
   modeSelector.parent('selector1Container');
 
   glyphSelector = createSelect();
-  glyphSelector.option('color');
-  glyphSelector.option('glyph');
+  glyphSelector.option('show_color');
+  glyphSelector.option('gray');
+  glyphSelector.option('spot');
   glyphSelector.changed(modeChangedEvent);
-  glyphSelector.value('glyph');
+  glyphSelector.value('gray');
   glyphSelector.parent('selector2Container');
 
   sizeSelector = createSelect();
+  sizeSelector.option('32');
   sizeSelector.option('64');
   sizeSelector.option('128');
   sizeSelector.option('256');
   sizeSelector.parent('selector3Container');
-  sizeSelector.value('64');
+  sizeSelector.value('32');
   sizeSelector.changed(sizeChangedEvent);
 
 
@@ -59,6 +73,19 @@ function setup () {
   button.mousePressed(buttonPressedEvent);
   button.parent('buttonContainer');
 
+  curEmojiImg = createImage(36, 36);
+  // create an array for HSB values: [18][18][3]
+  curEmojiPixels = Array(18);
+  for(var i=0; i<18; i++) {
+    curEmojiPixels[i] = Array(18);
+    for(var j=0; j<18; j++) {
+      curEmojiPixels[i][j] = Array(3);
+    }
+  }
+
+  gray_glyph = new GrayGlyph();
+  spot_glyph = new SpotGlyph();
+  colorMode(HSB);
   noLoop();
   refreshGridData();
   modeChangedEvent();
@@ -69,10 +96,6 @@ function sliderUpdated() {
 }
 
 function mouseClicked() {
-  analogyCycleStep = (analogyCycleStep + 1) % 3;
-  if(analogyCycleStep == 0) {
-    refreshAnalogyData();
-  }
   if (mouseX > width/4) {
     refreshGridData();
   }
@@ -94,49 +117,49 @@ var gridOffsetX, gridOffsetY;
 var gridSpacingX, gridSpacingY;
 // Generate data for putting glyphs in a grid
 
-var numAnalogyChoices = 5;
-var analogyValues = new Array(4);
-var analogyChoices = new Array(numAnalogyChoices);
-var analogyAnswer;
-var analogyCycleStep;
-
 function clamp(num, min, max) {
   return Math.min(Math.max(num, min), max);
 }
 
-function refreshAnalogyData() {
-  for (var i=0; i<4; i++) {
-    analogyValues[i] = new Array(8);
-  }
-  for (var i=0; i<3; i++) {
-    for (var j=0; j<8; j++) {
-      analogyValues[i][j] = random(100);
-    }
-  }
-  for (var j=0; j<8; j++) {
-    analogyValues[3][j] = clamp(analogyValues[1][j] - analogyValues[0][j] + analogyValues[2][j], 0, 100);
-    // handle overflow
-    analogyValues[1][j] = clamp(analogyValues[3][j] - analogyValues[2][j] + analogyValues[0][j], 0, 100);
-  }
-  analogyAnswer = Math.floor(random(numAnalogyChoices))
-  for (var i=0; i<numAnalogyChoices; i++) {
-    analogyChoices[i] = new Array(8);
-    for (var j=0; j<8; j++) {
-      if (i == analogyAnswer) {
-        analogyChoices[i][j] = analogyValues[3][j];
-      }
-      else {
-        analogyChoices[i][j] = random(100);
-      }
-    }
-  }
-  analogyCycleStep = 0;
-}
-
 function refreshGridData() {
+  var mode = modeSelector.value();
   var glyphSize = parseInt(sizeSelector.value(), 10);
 
-  if(glyphSize == 128) {
+  if (mode == "image") {
+    if(glyphSize == 32) {
+      numGridCols = 18;
+      numGridRows = 17;
+      gridOffsetX = 320;
+      gridSpacingX = 31;
+      gridOffsetY = 2;
+      gridSpacingY = 29;
+    }
+    else if(glyphSize == 64) {
+      numGridCols = 10;
+      numGridRows = 9;
+      gridOffsetX = 280;
+      gridSpacingX = 66;
+      gridOffsetY = -18;
+      gridSpacingY = 59;
+    }
+    else if(glyphSize == 128) {
+      numGridCols = 6;
+      numGridRows = 5;
+      gridOffsetX = 164;
+      gridSpacingX = 132;
+      gridOffsetY = -50;
+      gridSpacingY = 118;
+    }
+    else if(glyphSize == 256) {
+      numGridCols = 3;
+      numGridRows = 3;
+      gridOffsetX = 172;
+      gridSpacingX = 262;
+      gridOffsetY = -100;
+      gridSpacingY = 234;
+    }
+  }
+  else if(glyphSize == 128) {
     numGridCols = 7;
     numGridRows = 3;
     gridOffsetX = 10;
@@ -160,6 +183,14 @@ function refreshGridData() {
     gridOffsetY = 6;
     gridSpacingY = 71;
   }
+  else if(glyphSize == 32) {
+    numGridCols = 24;
+    numGridRows = 13;
+    gridOffsetX = 4;
+    gridSpacingX = 40;
+    gridOffsetY = 4;
+    gridSpacingY = 38;
+  }
   gridValues = new Array(numGridRows);
   for (var i=0; i<numGridRows; i++) {
     gridValues[i] = new Array(numGridCols);
@@ -167,7 +198,6 @@ function refreshGridData() {
       gridValues[i][j] = new Array(8);
     }
   }
-  var mode = modeSelector.value();
   if (mode == "gradient" || mode == 'oddball') {
     var top_left = Array(3);
     var top_right = Array(3);
@@ -180,7 +210,7 @@ function refreshGridData() {
       bottom_right[k] = random(max_vals[k]);
     }
     for (var i=0; i<numGridRows; i++) {
-      if(numGridRows == 0) {
+      if(numGridRows == 1) {
         var frac_down = 0;
       }
       else {
@@ -207,6 +237,15 @@ function refreshGridData() {
       }
     }
   }
+  else if(mode == "image") {
+    for (var i=0; i<numGridRows; i++) {
+      for (var j=0; j<numGridCols; j++) {
+        for (var k=0; k<3; k++) {
+          gridValues[i][j][k] = curEmojiPixels[i][j][k];
+        }
+      }
+    }
+  }
   else {
     for (var i=0; i<numGridRows; i++) {
       for (var j=0; j<numGridCols; j++) {
@@ -216,7 +255,6 @@ function refreshGridData() {
       }
     }
   }
-  refreshAnalogyData();
 }
 
 function sizeChangedEvent() {
@@ -234,7 +272,6 @@ function guideChangedEvent() {
 
 function modeChangedEvent() {
   var mode = modeSelector.value();
-  var glyph = glyphSelector.value();
 
   // enable/disable sliders
   if (mode === "drive") {
@@ -245,7 +282,7 @@ function modeChangedEvent() {
     sizeSelector.removeAttribute('disabled');
 
     // enable the first four sliders
-    for(i=0; i<3; i++) {
+    for(var i=0; i<3; i++) {
       val_sliders[i].removeAttribute('disabled');  
     }
   }
@@ -254,42 +291,75 @@ function modeChangedEvent() {
     // button.removeAttribute('disabled');
 
     // disable the sliders
-    for(i=0; i<3; i++) {
+    for(var i=0; i<3; i++) {
       val_sliders[i].attribute('disabled','');
     }
 
-    if (mode == "analogy") {
-      // enable the size selector
-      sizeSelector.attribute('disabled','');
-    }
-    else {
-      // enable the size selector
-      sizeSelector.removeAttribute('disabled');
-    }
+    // enable the size selector
+    // sizeSelector.removeAttribute('disabled');
 
     // refresh data
     refreshGridData();
   }
+  if (mode === "image") {
+    // get current emoji image
+    var offsetX = 36 * (curEmoji % 38);
+    var offsetY = 36 * Math.floor(curEmoji / 38);
+
+    var squareOffsets = [ [0,0], [0,1], [1,1], [1, 0] ];
+    curEmojiImg.copy(emojiImg, offsetX, offsetY, 36, 36, 0, 0, 36, 36);
+    curEmojiImg.loadPixels();
+    colorMode(RGB);
+    for(var i=0; i<17; i++) {
+      // i is y
+      var maxX = 18;
+      var offsetX = 0;
+      if (i%2 == 1) {
+        maxX = 17;
+        offsetX = 1;
+      }
+      for(var j=0; j<maxX; j++) {
+        // j is x
+        var sumColor = [0, 0, 0];
+        for(var k=0; k<4; k++) {
+          // k is summing over 4 adacent pixels
+          var curColor = curEmojiImg.get(j*2 + squareOffsets[k][0] + offsetX, 1 + i*2 + squareOffsets[k][1]);
+          for(var l=0; l<3; l++) {
+            sumColor[l] += curColor[l] / 4.0;
+          }
+        }
+        var curColor = color(sumColor);
+        curEmojiPixels[i][j][0] = curColor._getHue();
+        curEmojiPixels[i][j][1] = curColor._getSaturation();
+        curEmojiPixels[i][j][2] = curColor._getBrightness();
+      }
+    }
+    colorMode(HSB);
+
+    // refresh data
+    refreshGridData();
+  }
+
   redraw();
 }
 
 function buttonPressedEvent() {
-  // analogyCycleStep = 0;
   refreshGridData();
   redraw();
 }
 
-var colorBack = [232, 232, 232];
-var colorFront = [192, 192, 255];
+var colorBack = "rgb(232, 232, 232)"
+var colorFront = "rgb(192, 192, 255)"
 
-function color_glyph(values, size) {
-  colorMode(HSB);
-  fill(values[0], values[1], values[2]);
-  stroke(0);
-  var s2 = size/2;
-  ellipse(s2, s2, size);
-  colorMode(RGB);
+function ColorGlyph() {
+  this.draw = function(values, size) {
+    fill(values[0], values[1], values[2]);
+    stroke(0);
+    var s2 = size/2;
+    ellipse(s2, s2, size);
+  }
 }
+var color_glyph = new ColorGlyph();
 
 function highlightGlyph(glyphSize) {
   halfSize = glyphSize / 2.0;
@@ -301,13 +371,20 @@ function highlightGlyph(glyphSize) {
   strokeWeight(1);
 }
 
+function getGyphObject() {
+  var glyphMode = glyphSelector.value();
+  var glyph_obj = color_glyph;
+
+  if(glyphMode == "gray")
+    glyph_obj = gray_glyph;
+  else if(glyphMode == "spot")
+    glyph_obj = spot_glyph;
+
+  return(glyph_obj);
+}
+
 function drawDriveMode() {
-  var glyph_fn = gray_glyph;
-
-  if(glyphSelector.value() === "color")
-    glyph_fn = color_glyph;
-
-  var glyph = glyphSelector.value();
+  var glyph_obj = getGyphObject();
   var glyphSize = parseInt(sizeSelector.value(), 10);
   var halfSize = glyphSize / 2;
 
@@ -315,15 +392,18 @@ function drawDriveMode() {
   var halfSize = glyphSize / 2;
   var middle_x = canvasWidth / 2;
   var middle_y = canvasHeight / 2;
-  resetMatrix();
-  translate(middle_x - halfSize, middle_y - halfSize);
   var val = [0,0,0];
   for(i=0; i<3; i++) {
     val[i] = val_sliders[i].value() / 10.0;
   }
 
-  glyph_fn(val, glyphSize);
+  resetMatrix();
+  translate(middle_x - halfSize, middle_y - halfSize);
+  glyph_obj.draw(val, glyphSize);
+
   if (show_oddball) {
+    resetMatrix();
+    translate(middle_x - halfSize, middle_y - halfSize);
     highlightGlyph(glyphSize)
   }
 
@@ -333,10 +413,8 @@ function drawDriveMode() {
 }
 
 function drawGridMode() {
-  var glyph_fn = gray_glyph;
   var mode = modeSelector.value();
-  if(glyphSelector.value() === "color")
-    glyph_fn = color_glyph;
+  var glyph_obj = getGyphObject();
 
   var glyphSize = parseInt(sizeSelector.value(), 10);
   background(colorBack);
@@ -344,86 +422,37 @@ function drawGridMode() {
     resetMatrix();
     translate(gridOffsetX + oddball_col * gridSpacingX, gridOffsetY + oddball_row * gridSpacingY);
     highlightGlyph(glyphSize)
-    // fill(colorFront);
-    // noStroke();
-    // rect(gridOffsetX + oddball_col * gridSpacingX, gridOffsetY + oddball_row * gridSpacingY, glyphSize, glyphSize);
   }
+  var hexOffset = (mode == "image");
   for (var i=0; i<numGridRows; i++) {
-    for (var j=0; j<numGridCols; j++) {
+    var tweakedNumGridCols = numGridCols;
+    var offsetX = 0;
+    if (hexOffset && i%2 == 1) {
+      offsetX = gridSpacingX / 2;
+      tweakedNumGridCols = numGridCols - 1;
+    }
+    for (var j=0; j<tweakedNumGridCols; j++) {
       resetMatrix();
-      translate(gridOffsetX + j * gridSpacingX, gridOffsetY + i * gridSpacingY);
-      for (var k=0; k<8; k++) {
-        glyph_fn(gridValues[i][j], glyphSize);
-      }
-    }
-  }
-}
-
-var analogyOffsetX = 350;
-var analogyOffsetY = 40;
-var analogySpacingX = 160;
-var analogySpacingY = 160;
-var analogyChoiceOffsetX = 260;
-var analogyChoiceOffsetY = 380;
-var analogyChoiceSpacingX = 100;
-
-function drawAnalogy() {
-  background(colorBack);
-
-  var glyph_fn = gray_glyph;
-  if(glyphSelector.value() === "color")
-    glyph_fn = color_glyph;
-
-  resetMatrix();
-  translate(analogyOffsetX + 0 * analogySpacingX, analogyOffsetY + 0 * analogySpacingY);
-  glyph_fn(analogyValues[0], 128);
-  resetMatrix();
-  translate(analogyOffsetX + 1 * analogySpacingX, analogyOffsetY + 0 * analogySpacingY);
-  glyph_fn(analogyValues[1], 128);
-  resetMatrix();
-  translate(analogyOffsetX + 0 * analogySpacingX, analogyOffsetY + 1 * analogySpacingY);
-  glyph_fn(analogyValues[2], 128);
-  resetMatrix();
-  translate(analogyOffsetX + 1 * analogySpacingX, analogyOffsetY + 1 * analogySpacingY);
-  if(analogyCycleStep == 2) {
-    glyph_fn(analogyValues[3], 128);
-  }
-  else {
-    stroke(64, 64, 192);
-    noFill();
-    if(glyph_fn === gray_glyph) {
-      ellipse(64, 64, 128+2);
-    }
-    else {
-      rect(-1, -1, 128+2, 128+2);
-    }
-  }
-
-  if(analogyCycleStep != 0) {
-    for(var i=0; i<numAnalogyChoices; i++) {
+      translate(gridOffsetX + j * gridSpacingX + offsetX, gridOffsetY + i * gridSpacingY);
+      glyph_obj.draw(gridValues[i][j], glyphSize);
       resetMatrix();
-      translate(analogyChoiceOffsetX + i * analogyChoiceSpacingX, analogyChoiceOffsetY);
-      if(analogyCycleStep == 2 && analogyAnswer == i) {
-        stroke(64, 64, 192);
-        fill(64, 64, 192);
-        rect(-6, -6, 64+12, 64+12);
-      }
-      glyph_fn(analogyChoices[i], 64);
     }
   }
 }
 
 function draw () {
+  colorMode(HSB);
   var mode = modeSelector.value();
 
   if (mode == "drive") {
     drawDriveMode();
   }
-  else if (mode == "analogy") {
-    drawAnalogy();
-  }
   else {
     drawGridMode();
+  }
+  resetMatrix();
+  if (mode == "image") {
+    image(curEmojiImg, 32, height-32-36);
   }
 }
 
@@ -439,11 +468,15 @@ function keyTyped() {
     redraw();
   }
   else if (key == 'f') {
-    if(glyphSelector.value() === "color") {
-      glyphSelector.value('glyph');
+    var curGlyph = glyphSelector.value()
+    if(curGlyph == "show_color") {
+      glyphSelector.value('gray');
     }
-    else {
-      glyphSelector.value('color');
+    else if(curGlyph == "gray") {
+      glyphSelector.value('spot');
+    }
+    else if(curGlyph == "spot") {
+      glyphSelector.value('show_color');
     }
     redraw();
   }
@@ -453,14 +486,18 @@ function keyTyped() {
     guideChangedEvent();
   }
   else if (key == '1') {
-    sizeSelector.value('64');
+    sizeSelector.value('32');
     sizeChangedEvent()
   }
   else if (key == '2') {
-    sizeSelector.value('128');
+    sizeSelector.value('64');
     sizeChangedEvent()
   }
   else if (key == '3') {
+    sizeSelector.value('128');
+    sizeChangedEvent()
+  }
+  else if (key == '4') {
     sizeSelector.value('256');
     sizeChangedEvent()
   }
@@ -479,5 +516,28 @@ function keyTyped() {
   else if (key == 'o') {
     modeSelector.value('oddball');
     modeChangedEvent()
+  }
+  else if (key == 'i') {
+    modeSelector.value('image');
+    modeChangedEvent()
+  }
+}
+
+function keyPressed() {
+  if (keyCode == LEFT_ARROW) {
+    curEmoji = (curEmoji + NUM_EMOJI - 1) % NUM_EMOJI;
+    modeChangedEvent();
+  }
+  else if (keyCode == RIGHT_ARROW) {
+    curEmoji = (curEmoji + 1) % NUM_EMOJI;
+    modeChangedEvent();
+  }
+  else if (keyCode == UP_ARROW) {
+    curEmoji = (curEmoji + NUM_EMOJI - 38) % NUM_EMOJI;
+    modeChangedEvent();
+  }
+  else if (keyCode == DOWN_ARROW) {
+    curEmoji = (curEmoji + 38) % NUM_EMOJI;
+    modeChangedEvent();
   }
 }
