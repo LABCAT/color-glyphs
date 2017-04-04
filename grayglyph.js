@@ -23,28 +23,115 @@ function GrayGlyph() {
    *       - stroke(0, 0, 100); //
    */ 
   this.draw = function(values, size) {
-    // replace this with your own version
+    //determine the center of the circle
+    var center = size/2;
+    
 
-    // map brightness to large circle shade
-    var color1 = map(values[2], 0, 100, 10, 70)
-    stroke(color1);
-    fill(color1)
-    var s2 = size/2;
-    ellipse(s2, s2, size);
+    //hue dimension
+    var hueDegree = floor(values[0]);
+    //a modulo variable used to provide slight variation in the transparency levels of the ellipses that represent the hue dimension
+    var hueModulo = (hueDegree % 12) * 0.015625;
+    var hue = map(hueDegree, 0, 360, size, 0 + size/16);
+    
+    //saturation dimension
+    //saturationMin and saturationMax are values that determine the positions for the alternating points (between the center of a circle and its edge) of the triangles representing the saturation dimension 
+    var saturationMin = map(values[1], 0, 100, center, 0);
+    var saturationMax = map(values[1], 0, 100, center, size);
+    
+    //brightness dimension
+    //brightnessMin and brightnessMax are values that determine the position for the alternating points (between the center of a circle and its edge) of the triangles representing the brightness dimension 
+    var brightnessMin = map(values[2], 0, 100, center, (0 + size/8 + size/32));
+    var brightnessMax = map(values[2], 0, 100, center, (size - size/8 - size/32));
+    
 
-    // inner size is set to 30%
-    var inner_size = 0.2 + 0.4 * 0.3;
-    var s3 = size * inner_size;
+    //draw the circles that represent the hue dimension
+    stroke(255);
 
-    // inner color based on saturation
-    var color2 = map(values[1], 0, 100, color1+20, 240)
-    fill(color2);
-    stroke(color2);
+    //draw a black background for the glyphs area
+    fill(0, 0, 0);
+    ellipse(center, center, size);
+    
+    //outer circle
+    fill(0, 0, 100, 0.1875 + hueModulo);
+    ellipse(center, center, hue);
 
-    // hue controls left/right shift
-    var shift_frac = (values[0] - 180.0) / 180.0;
-    var max_shift = 0.5 * (size - s3);
-    var x_shift = shift_frac * max_shift;
-    ellipse(s2 + x_shift, s2, s3);  
+    //middle circle
+    fill(0, 0, 100, 0.625 + hueModulo);
+    ellipse(center, center, hue / 2);
+
+    //inner circle
+    fill(0);
+    ellipse(center, center, hue / 4);
+
+    //JSON objects used to store all the x and y positions of the triangles that represent the saturation and brightness dimensions 
+    var positions = {
+      'x1': [
+              center - size/32,
+              center - size/32,
+              center,
+              center + size/32,
+              center - size/32,
+              center - size/32,
+              center,
+              center + size/32,
+            ],
+      'y1': [
+              center,
+              center - size/32,
+              center - size/32,
+              center - size/32,
+              center,
+              center - size/32,
+              center - size/32,
+              center - size/32
+            ],
+      'x2': [
+              center,
+              brightnessMax,
+              saturationMax,
+              brightnessMax,
+              center,
+              brightnessMin,
+              saturationMin,
+              brightnessMin
+            ],
+      'y2': [
+              saturationMin,
+              brightnessMin,
+              center,
+              brightnessMax,
+              saturationMax,
+              brightnessMax,
+              center,
+              brightnessMin
+            ],
+      'x3': [
+              center + size/32,
+              center + size/32,
+              center,
+              center - size/32,
+              center + size/32,
+              center + size/32,
+              center,
+              center - size/32
+            ],
+      'y3': [
+              center,
+              center + size/32,
+              center + size/32,
+              center + size/32,
+              center,
+              center + size/32,
+              center + size/32,
+              center + size/32
+            ]
+    }
+    
+    //draw the 8 triangles that represnt the saturation and brightness dimensions
+    fill(0, 0, 100, 0.5);
+    noStroke();
+    for($i = 0; $i < 8; $i++){
+      triangle(positions['x1'][$i], positions['y1'][$i], positions['x2'][$i], positions['y2'][$i], positions['x3'][$i], positions['y3'][$i]);
+    }
   }  
 }
