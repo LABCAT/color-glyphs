@@ -30,55 +30,43 @@ function GrayGlyph() {
     //hue dimension
     var hueDegree = floor(values[0]) % 360;
     //a modulo variable used to provide slight variation in the transparency levels of the ellipses that represent the hue dimension
-    var hueModulo = (hueDegree % 12) * 0.015625;
-    var hueCircle = map(hueDegree, 0, 179, 0 + size/16, size);
-    var hueHex = map(hueDegree, 180, 359, size, 0 + size/16);
+    var hueModulo = (hueDegree % 12);
+    var hueHex = map(values[1], 0, 50, 0 + size/16, size);
+    var hueCircle = map(values[1], 100, 0, size, 0 + size/16);
     
     //saturation dimension
     //saturationMin and saturationMax are values that determine the positions for the alternating points (between the center of a circle and its edge) of the triangles representing the saturation dimension 
     var saturationMin = map(hueDegree, 0, 179, center, 0);
     var saturationMax = map(hueDegree, 0, 179, center, size);
-    
+    if(hueDegree > 179) {
+		saturationMin = 0;
+		saturationMax = size;
+	}
     //brightness dimension
     //brightnessMin and brightnessMax are values that determine the position for the alternating points (between the center of a circle and its edge) of the triangles representing the brightness dimension 
-    var brightnessMin = map(hueDegree, 180, 359, center, (0 + size/8 + size/32));
-    var brightnessMax = map(hueDegree, 180, 359, center, (size - size/8 - size/32));
-    
+    var brightnessMin = map(hueDegree, 359, 180, (0 + size/8 + size/32), center);
+    var brightnessMax = map(hueDegree, 359, 180, (size - size/8 - size/32), center);
+
 
     //draw the circles that represent the hue dimension
-    // stroke(255);
-
-    var fillC = map(values[1], 0, 100, 50, 0);
-    //draw a black background for the glyphs area
-    fill(0, 0, fillC);
-    ellipse(center, center, size);
+    stroke(0);
+	
+    //ellipse(center, center, size);
+   
     
-    // //outer circle
-    // fill(0, 0, 100, 0.1875 + hueModulo);
-    // if(hueDegree > 180){
-    //   hexagon(center, center, hueHex/2, 8);
-    // }
-    // else {
-    //   ellipse(center, center, hueCircle);
-    // }
+    //outer circle
+    fill(0, 0, 100, 0.1875 + hueModulo * 0.015625);
+    ellipse(center, center, hueCircle);
 
-    // //middle circle
-    // fill(0, 0, 100, 0.625 + hueModulo);
-    // if(hueDegree > 180){
-    //   hexagon(center, center, hueHex/4, 8);
-    // }
-    // else {
-    //   ellipse(center, center, hueCircle / 2);
-    // }
+
+    //middle circle
+    fill(0, 0, 100, 0.625 + hueModulo * 0.015625);
+	ellipse(center, center, hueCircle / 2);
+	ellipse(center, center, hueCircle / 2, TWO_PI/16);
 
     // //inner circle
-    // fill(0);
-    // if(hueDegree > 180){
-    //   hexagon(center, center, hueHex/8, 8);
-    // }
-    // else {
-    //   ellipse(center, center, hueCircle / 4);
-    // }
+    fill(0);
+	ellipse(center, center, hueCircle / 4);
 
     //JSON objects used to store all the x and y positions of the triangles that represent the saturation and brightness dimensions 
     var positions = {
@@ -143,20 +131,29 @@ function GrayGlyph() {
               center + size/32
             ]
     }
-    
+     var fillC = map(values[2], 0, 100, 100, 0);
+    var fillT = map(values[2], 0, 100, 0.9, 0);
+    var fillH = map(values[2], 100, 0, 0.9, 0.1);
+    //draw a black background for the glyphs area
+    fill(0, 0, 0, fillT);
+    hexagon(center, center, size/2, 8, TWO_PI/16);
+	
     //draw the 8 triangles that represnt the saturation and brightness dimensions
-    fill(0, 0, 100, 0.5);
+    //fill(0, 0, fillC, 0.5 + (hueModulo  * 0.015625 * 2));
+    fill(0, 0, fillC, fillH);
     noStroke();
     for($i = 0; $i < 8; $i++){
       triangle(positions['x1'][$i], positions['y1'][$i], positions['x2'][$i], positions['y2'][$i], positions['x3'][$i], positions['y3'][$i]);
     }
+	
+	
   }  
 }
 
-function hexagon(x, y, radius, npoints) {
+function hexagon(x, y, radius, npoints, rotation) {
   var angle = TWO_PI / npoints;
   beginShape();
-  for (var a = TWO_PI/16; a < TWO_PI + TWO_PI/16; a += angle) {
+  for (var a = rotation; a < TWO_PI + rotation; a += angle) {
     var sx = x + cos(a) * radius;
     var sy = y + sin(a) * radius;
     vertex(sx, sy);

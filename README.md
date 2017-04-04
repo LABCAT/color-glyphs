@@ -1,10 +1,15 @@
 ## PS2 MDDN 242 2017
 
-### Color Glyphs - Glyph System
+### Color Glyphs - Glyph Object
 
-I decided that my glyph system would be inspired by the interpolation part of the assignment.  
+To begin with I used the same glyph I had created for the glyph system. This worked reasonably well but still had a lot of room for improvement. 
 
-The glyphs had been designed for a square shaped area and didn't fit within the circle area which meant I had to adjust the design in order to stay within the guidelines. As a result of this 
-the glyph looks quite different than it did originally. However, visually it is still thematically related to the glyphs from the interpolation part of the assignment.  
+I have made the following changes which have improved the glyph immensely:
 
-I have tested my glyph system quite thoroughly and think that it works really well. When in oddball mode it is usually very easy to find the glyph that is not matching. 
+1. Combined the shapes from the saturation and brightness dimensions into one group which is now the hue dimension.
+
+2. Moved the functionality from the old hue dimension into the saturation dimension.
+
+3. Added a new shape to represent the brightness dimension - a black hexagon with a varying level a transparency.
+
+
