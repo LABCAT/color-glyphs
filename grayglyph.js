@@ -28,40 +28,57 @@ function GrayGlyph() {
     
 
     //hue dimension
-    var hueDegree = floor(values[0]);
+    var hueDegree = floor(values[0]) % 360;
     //a modulo variable used to provide slight variation in the transparency levels of the ellipses that represent the hue dimension
     var hueModulo = (hueDegree % 12) * 0.015625;
-    var hue = map(hueDegree, 0, 360, size, 0 + size/16);
+    var hueCircle = map(hueDegree, 0, 179, 0 + size/16, size);
+    var hueHex = map(hueDegree, 180, 359, size, 0 + size/16);
     
     //saturation dimension
     //saturationMin and saturationMax are values that determine the positions for the alternating points (between the center of a circle and its edge) of the triangles representing the saturation dimension 
-    var saturationMin = map(values[1], 0, 100, center, 0);
-    var saturationMax = map(values[1], 0, 100, center, size);
+    var saturationMin = map(hueDegree, 0, 179, center, 0);
+    var saturationMax = map(hueDegree, 0, 179, center, size);
     
     //brightness dimension
     //brightnessMin and brightnessMax are values that determine the position for the alternating points (between the center of a circle and its edge) of the triangles representing the brightness dimension 
-    var brightnessMin = map(values[2], 0, 100, center, (0 + size/8 + size/32));
-    var brightnessMax = map(values[2], 0, 100, center, (size - size/8 - size/32));
+    var brightnessMin = map(hueDegree, 180, 359, center, (0 + size/8 + size/32));
+    var brightnessMax = map(hueDegree, 180, 359, center, (size - size/8 - size/32));
     
 
     //draw the circles that represent the hue dimension
-    stroke(255);
+    // stroke(255);
 
+    var fillC = map(values[1], 0, 100, 50, 0);
     //draw a black background for the glyphs area
-    fill(0, 0, 0);
+    fill(0, 0, fillC);
     ellipse(center, center, size);
     
-    //outer circle
-    fill(0, 0, 100, 0.1875 + hueModulo);
-    ellipse(center, center, hue);
+    // //outer circle
+    // fill(0, 0, 100, 0.1875 + hueModulo);
+    // if(hueDegree > 180){
+    //   hexagon(center, center, hueHex/2, 8);
+    // }
+    // else {
+    //   ellipse(center, center, hueCircle);
+    // }
 
-    //middle circle
-    fill(0, 0, 100, 0.625 + hueModulo);
-    ellipse(center, center, hue / 2);
+    // //middle circle
+    // fill(0, 0, 100, 0.625 + hueModulo);
+    // if(hueDegree > 180){
+    //   hexagon(center, center, hueHex/4, 8);
+    // }
+    // else {
+    //   ellipse(center, center, hueCircle / 2);
+    // }
 
-    //inner circle
-    fill(0);
-    ellipse(center, center, hue / 4);
+    // //inner circle
+    // fill(0);
+    // if(hueDegree > 180){
+    //   hexagon(center, center, hueHex/8, 8);
+    // }
+    // else {
+    //   ellipse(center, center, hueCircle / 4);
+    // }
 
     //JSON objects used to store all the x and y positions of the triangles that represent the saturation and brightness dimensions 
     var positions = {
@@ -134,4 +151,15 @@ function GrayGlyph() {
       triangle(positions['x1'][$i], positions['y1'][$i], positions['x2'][$i], positions['y2'][$i], positions['x3'][$i], positions['y3'][$i]);
     }
   }  
+}
+
+function hexagon(x, y, radius, npoints) {
+  var angle = TWO_PI / npoints;
+  beginShape();
+  for (var a = TWO_PI/16; a < TWO_PI + TWO_PI/16; a += angle) {
+    var sx = x + cos(a) * radius;
+    var sy = y + sin(a) * radius;
+    vertex(sx, sy);
+  }
+  endShape(CLOSE);
 }
