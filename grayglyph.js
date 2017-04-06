@@ -59,15 +59,15 @@ function GrayGlyph() {
     stroke(0);
 
     //outer circle
-    fill(0, 0, 100, 0.1875 + hueModulo * 0.015625);
+    fill(0, 0, 0, 0.1875);
     ellipse(center, center, circleSize);
 
     //middle circle
-    fill(0, 0, 100, 0.625 + hueModulo * 0.015625);
+    fill(0, 0, 100, 0.625);
     ellipse(center, center, circleSize / 2);
 
     // //inner circle
-    fill(0);
+    fill(0, 0, 0, 0.375);
     ellipse(center, center, circleSize / 4);
 
     //draw the hexagon that represents the brightness dimension
@@ -140,7 +140,7 @@ function GrayGlyph() {
 
     //draw the 8 triangles that repressnt the hue dimension
     //the colour and transparency level of the triangles is also affected by the brightness dimension
-    fill(0, 0, hueColour, hueTrans);
+    fill(0, 0, 100, hueTrans);
     noStroke();
     for($i = 0; $i < 8; $i++){
       triangle(positions['x1'][$i], positions['y1'][$i], positions['x2'][$i], positions['y2'][$i], positions['x3'][$i], positions['y3'][$i]);
