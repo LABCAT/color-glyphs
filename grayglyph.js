@@ -138,14 +138,34 @@ function GrayGlyph() {
             ]
     }
 
+    angleMode(DEGREES);
+    translate(center, center);
     //draw the 8 triangles that repressnt the hue dimension
     //the colour and transparency level of the triangles is also affected by the brightness dimension
-    fill(0, 0, 100, hueTrans);
     noStroke();
+    fill(0, 0, hueColour, 0.9);
+    rotate(hueDegree);
     for($i = 0; $i < 8; $i++){
-      triangle(positions['x1'][$i], positions['y1'][$i], positions['x2'][$i], positions['y2'][$i], positions['x3'][$i], positions['y3'][$i]);
+      triangle(positions['x1'][$i]/3, positions['y1'][$i]/3, positions['x2'][$i]/3, positions['y2'][$i]/3, positions['x3'][$i]/3, positions['y3'][$i]/3);
     }
 
+    translate(-center, -center);
+    //draw the 8 triangles that repressnt the hue dimension
+    //the colour and transparency level of the triangles is also affected by the brightness dimension
+    
+    fill(0, 0, 100, hueTrans);
+    for($i = 0; $i < 8; $i++){
+        triangle(positions['x1'][$i], positions['y1'][$i], positions['x2'][$i], positions['y2'][$i], positions['x3'][$i], positions['y3'][$i]);
+    }
+    // translate(center, center);
+    // //draw the 8 triangles that repressnt the hue dimension
+    // //the colour and transparency level of the triangles is also affected by the brightness dimension
+    // fill(0, 0, 0, 50);
+    // rotate(hueDegree);
+    // for($i = 0; $i < 8; $i++){
+    //   triangle(positions['x1'][$i]/3, positions['y1'][$i]/3, positions['x2'][$i]/3, positions['y2'][$i]/3, positions['x3'][$i]/3, positions['y3'][$i]/3);
+    // }
+    angleMode(RADIANS);
 
   }
 }
