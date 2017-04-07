@@ -22,7 +22,7 @@ function GrayGlyph() {
    *       - fill(0, 0, 51);    // equivalent to above
    *       - stroke(0, 0, 100); //
    */
-  this.draw = function(values, size) {
+  this.draw = function(values, size, spot_hue = 0) {
     //determine the center of the circle
     var center = size/2;
 
@@ -152,8 +152,12 @@ function GrayGlyph() {
     translate(-center, -center);
     //draw the 8 triangles that repressnt the hue dimension
     //the colour and transparency level of the triangles is also affected by the brightness dimension
-    
-    fill(0, 0, 100, hueTrans);
+    if(spot_hue && hueDegree < spot_hue + 45 && hueDegree > spot_hue - 45){
+      fill(spot_hue, 100, 100, hueTrans);
+    }
+    else {
+      fill(0, 0, 100, hueTrans);
+    }
     for($i = 0; $i < 8; $i++){
         triangle(positions['x1'][$i], positions['y1'][$i], positions['x2'][$i], positions['y2'][$i], positions['x3'][$i], positions['y3'][$i]);
     }
