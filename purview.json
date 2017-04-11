@@ -1,6 +1,11 @@
 {
   "commits": [
 	{
+      "sha": "55fc6e3ba84036ebbfcac5429a6afbb0154c64c6",
+      "name": "final"
+    },
+    {
+	{
       "sha": "c60e241019edccf50f0f2c2ddea4ac010826f81e",
       "name": "spot_color"
     },
