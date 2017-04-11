@@ -1,13 +1,9 @@
 ## PS2 MDDN 242 2017
 
-### Color Glyphs - Glyph Object
+### Color Glyphs - Spot Colour
 
-I decided to continue using the same glyph from my glyph system and made the following changes to provide better differentiation between fields of colours:
+For this part I wanted to use the colour splash effect with the same glyph from the previous part of the project.  I did this by using a range to determine whether or not the spot hue should be used in the glyph. The downside to this approach is that not every emoji has colours within the range. 
 
-1. Combined the shapes from the saturation and brightness dimensions into one group which is now the hue dimension.
+To overcome this I implemented some code that determines if their will be enough values in the curEmojiPixels array for a colour splash. If not I then determine which hue appears most and use that hue to set the values of my range. 
 
-2. Moved the functionality from the old hue dimension into the saturation dimension.
-
-3. Added a new shape to represent the brightness dimension - a black hexagon with a varying level a transparency.
-
-At this point I still wasn't completely satisfied as the hue dimension didn't have enough variety when viewed at the smallest size.  I resolved this by adding rotational functionality and another smaller star to represent the hue dimension. 
+This has worked very well and now most images have an interesting colour splash effect.

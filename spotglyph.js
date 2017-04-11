@@ -1,6 +1,6 @@
 function SpotGlyph() {
   this.spot_hue = 100;
-  this.spot_range = 90;
+  this.spot_range = 60;
 
   /*
    * values is an array of 3 numbers: [hue, saturation, brightness]
