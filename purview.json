@@ -1,6 +1,10 @@
 {
   "commits": [
 	{
+      "sha": "c60e241019edccf50f0f2c2ddea4ac010826f81e",
+      "name": "spot_color"
+    },
+	{
       "sha": "0655c36db68acd5b592d8d7f81498d68c1a78109",
       "name": "glyph_object"
     },
