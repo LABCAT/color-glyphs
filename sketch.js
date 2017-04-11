@@ -424,7 +424,7 @@ function drawDriveMode() {
 
   resetMatrix();
   translate(middle_x + halfSize + 32, middle_y - halfSize);
-  color_glyph(val, glyphSize);
+  color_glyph.draw(val, glyphSize);
 }
 
 function drawGridMode() {
@@ -482,6 +482,7 @@ function checkImageUpdate() {
         nextEmojiColors = colorCopyArray(curEmojiColors);
         lastEmojiSwappedTime = now;
       }
+      colorMode(RGB);
       if(now - lastEmojiSwappedTime < 1000) {
         isSwappingEmoji = true;
         emojiSwapLerp = (now - lastEmojiSwappedTime) / 1000.0;
@@ -513,6 +514,7 @@ function checkImageUpdate() {
         }
         refreshGridData();
       }
+      colorMode(HSB);
     }
   }
 }
