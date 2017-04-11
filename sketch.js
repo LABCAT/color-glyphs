@@ -11,7 +11,7 @@ var oddball_col = 0;
 var val_sliders = [];
 var max_vals = [360, 100, 100];
 
-var curEmoji = 76;
+var curEmoji = 551;
 var NUM_EMOJI = 872;
 var EMOJI_WIDTH = 38;
 
