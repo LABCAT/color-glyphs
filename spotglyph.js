@@ -26,22 +26,22 @@ function SpotGlyph() {
    *    - stroke(this.spot_hue, 100, 100); // fully saturated and maximum brightness
    */
   this.draw = function(values, size) {
-    // var hue = values[0];
-    // var sat = values[1];
-    // var brt = values[2];
+     var hue = values[0];
+     var sat = values[1];
+     var brt = values[2];
 
-    // var halfSize = size/2;
-    // var sqSize = size * Math.sqrt(2) / 2;
+     var halfSize = size/2;
+     var sqSize = size * Math.sqrt(2) / 2;
 
-    // noStroke();
-    // if(hue > this.spot_hue && hue < this.spot_hue + 90) {
-    //   fill(this.spot_hue, sat, brt);
-    // }
-    // else {
-    //   fill(this.spot_hue, 0, brt);
-    // }
-    // translate(halfSize, halfSize);
-    // rect(-sqSize/2, -sqSize/2, sqSize, sqSize);
+     noStroke();
+     if(hue > this.spot_hue && hue < this.spot_hue + 90) {
+       fill(this.spot_hue, sat, brt);
+     }
+     else {
+       fill(this.spot_hue, 0, brt);
+     }
+     translate(halfSize, halfSize);
+     rect(-sqSize/2, -sqSize/2, sqSize, sqSize);
 
   }
 }
