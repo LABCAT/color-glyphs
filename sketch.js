@@ -15,9 +15,18 @@ var curEmoji = 76;
 var NUM_EMOJI = 872;
 var EMOJI_WIDTH = 38;
 
+var lastKeyPressedTime;
+var secondsUntilSwapMode = 10;
+var secondsPerEmoji = 5;
+var isSwappingEmoji = false;
+var emojiSwapLerp = 0;
+var prevEmoji = 0;
+var lastEmojiSwappedTime;
+
 var emojiImg;
 var curEmojiImg;
 var curEmojiPixels;
+var curEmojiColors, nextEmojiColors, prevEmojiColors;
 function preload() {
   emojiImg = loadImage("twemoji36b_montage.png");
 }
@@ -26,6 +35,10 @@ function setup() {
   // create the drawing canvas, save the canvas element
   var main_canvas = createCanvas(canvasWidth, canvasHeight);
   main_canvas.parent('canvasContainer');
+
+  var now = millis();
+  lastKeyPressedTime = now;
+  lastEmojiSwappedTime = now;
 
   // create two sliders
   for (i=0; i<3; i++) {
@@ -52,7 +65,7 @@ function setup() {
   glyphSelector.option('gray');
   glyphSelector.option('spot');
   glyphSelector.changed(modeChangedEvent);
-  glyphSelector.value('gray');
+  glyphSelector.value('spot');
   glyphSelector.parent('selector2Container');
 
   sizeSelector = createSelect();
@@ -76,8 +89,10 @@ function setup() {
   curEmojiImg = createImage(36, 36);
   // create an array for HSB values: [18][18][3]
   curEmojiPixels = Array(18);
+  curEmojiColors = Array(18);
   for(var i=0; i<18; i++) {
     curEmojiPixels[i] = Array(18);
+    curEmojiColors[i] = Array(18);
     for(var j=0; j<18; j++) {
       curEmojiPixels[i][j] = Array(3);
     }
@@ -86,7 +101,6 @@ function setup() {
   gray_glyph = new GrayGlyph();
   spot_glyph = new SpotGlyph();
   colorMode(HSB);
-  noLoop();
   refreshGridData();
   modeChangedEvent();
 }
@@ -329,6 +343,7 @@ function modeChangedEvent() {
           }
         }
         var curColor = color(sumColor);
+        curEmojiColors[i][j] = curColor;
         curEmojiPixels[i][j][0] = curColor._getHue();
         curEmojiPixels[i][j][1] = curColor._getSaturation();
         curEmojiPixels[i][j][2] = curColor._getBrightness();
@@ -440,9 +455,78 @@ function drawGridMode() {
   }
 }
 
+function colorCopyArray(c) {
+  d = Array(18);
+  for(var i=0; i<18; i++) {
+    d[i] = Array(18);
+    for(var j=0; j<18; j++) {
+      d[i][j] = c[i][j];
+    }
+  }
+  return d;
+}
+
+function checkImageUpdate() {
+  var mode = modeSelector.value();
+
+  isSwappingEmoji = false;
+  if (mode == "image") {
+    now = millis();
+    if(lastKeyPressedTime + 1000 * secondsUntilSwapMode < now) {
+      // key not pressed recently
+      if(lastEmojiSwappedTime + 1000 * secondsPerEmoji < now) {
+        prevEmoji = curEmoji;
+        prevEmojiColors = colorCopyArray(curEmojiColors);
+        // no swaps recently
+        updateEmoji(1);
+        nextEmojiColors = colorCopyArray(curEmojiColors);
+        lastEmojiSwappedTime = now;
+      }
+      if(now - lastEmojiSwappedTime < 1000) {
+        isSwappingEmoji = true;
+        emojiSwapLerp = (now - lastEmojiSwappedTime) / 1000.0;
+        // print("LERP: " + emojiSwapLerp);
+        for (var i=0; i<numGridRows; i++) {
+          for (var j=0; j<numGridCols; j++) {
+            // var curColor = lerpColor(prevEmojiColors[i][j], nextEmojiColors[i][j], emojiSwapLerp);
+            var curColor = prevEmojiColors[i][j];
+            if (curColor) {
+              curColor = lerpColor(prevEmojiColors[i][j], nextEmojiColors[i][j], emojiSwapLerp);
+              curEmojiPixels[i][j][0] = curColor._getHue();
+              curEmojiPixels[i][j][1] = curColor._getSaturation();
+              curEmojiPixels[i][j][2] = curColor._getBrightness();
+            }
+          }
+        }
+        refreshGridData();
+      }
+      else {
+        for (var i=0; i<numGridRows; i++) {
+          for (var j=0; j<numGridCols; j++) {
+            var curColor = nextEmojiColors[i][j];
+            if (curColor) {
+              curEmojiPixels[i][j][0] = curColor._getHue();
+              curEmojiPixels[i][j][1] = curColor._getSaturation();
+              curEmojiPixels[i][j][2] = curColor._getBrightness();
+            }
+          }
+        }
+        refreshGridData();
+      }
+    }
+  }
+}
+
+var is_drawing = false;
 function draw () {
+  if (is_drawing) {
+    return;
+  }
+  is_drawing = true;
   colorMode(HSB);
   var mode = modeSelector.value();
+
+  checkImageUpdate();
 
   if (mode == "drive") {
     drawDriveMode();
@@ -454,6 +538,7 @@ function draw () {
   if (mode == "image") {
     image(curEmojiImg, 32, height-32-36);
   }
+  is_drawing = false;
 }
 
 function keyTyped() {
@@ -523,21 +608,32 @@ function keyTyped() {
   }
 }
 
+function updateEmoji(offset) {
+    curEmoji = (curEmoji + NUM_EMOJI + offset) % NUM_EMOJI;
+    modeChangedEvent()
+}
+
 function keyPressed() {
+  lastKeyPressedTime = millis();
+
   if (keyCode == LEFT_ARROW) {
-    curEmoji = (curEmoji + NUM_EMOJI - 1) % NUM_EMOJI;
-    modeChangedEvent();
+    updateEmoji(-1);
   }
   else if (keyCode == RIGHT_ARROW) {
-    curEmoji = (curEmoji + 1) % NUM_EMOJI;
-    modeChangedEvent();
+    updateEmoji(1);
   }
   else if (keyCode == UP_ARROW) {
-    curEmoji = (curEmoji + NUM_EMOJI - 38) % NUM_EMOJI;
-    modeChangedEvent();
+    updateEmoji(-38);
   }
   else if (keyCode == DOWN_ARROW) {
-    curEmoji = (curEmoji + 38) % NUM_EMOJI;
-    modeChangedEvent();
+    updateEmoji(38);
   }
+}
+
+function mouseMoved() {
+  lastKeyPressedTime = millis();
+}
+
+function mouseDragged() {
+  lastKeyPressedTime = millis();
 }
