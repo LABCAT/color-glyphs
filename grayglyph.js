@@ -22,14 +22,12 @@ function GrayGlyph() {
    *       - fill(0, 0, 51);    // equivalent to above
    *       - stroke(0, 0, 100); //
    */
-  this.draw = function(values, size, spot_hue = 0) {
+  this.draw = function(values, size) {
     //determine the center of the circle
     var center = size/2;
 
     //value of the hue dimension
     var hueDegree = floor(values[0]) % 360;
-    //a modulo variable used to provide slight variation in the transparency levels of the ellipses that represent the hue dimension
-    var hueModulo = (hueDegree % 12);
 
     //horiVertMin and horiVertMax are values that determine the positions for the alternating points (between the center of a circle and its edge)
     //of the vertical and horizontal triangles used to represent the hue dimension
@@ -47,137 +45,126 @@ function GrayGlyph() {
 
     //variables created by the saturation dimension
     var circleSize = map(values[1], 100, 0, size, 0 + size/16);
+	//JSON object containing the different values for the three circles drawn to represent the saturation dimension
+	var satCircles = {
+		'brightness' : [
+					0,
+					100,
+					0
+				],
+		'alpha' : [
+					0.1875,
+					0.625,
+					0.375
+				],
+		'size' : [
+					circleSize,
+					circleSize/2,
+					circleSize/4,
+				]
+	}
 
     //variables created by the brightness dimension
     var brightnessTrans = map(values[2], 0, 100, 0.9, 0);
     var hueColour = map(values[2], 0, 100, 100, 0);
     var hueTrans = map(values[2], 100, 0, 0.9, 0.1);
 
-    //draw the circles that represent the saturation dimension
-    //transparency is affected by the value of the hueModulo variable
-
+    //set up the JSON objects used to store all the x and y positions of the triangles that will be drawn when this is passed to the drawStar function
+    var positions = {
+      'x1': [
+				center - size/32,
+				center - size/32,
+				center,
+				center + size/32,
+				center - size/32,
+				center - size/32,
+				center,
+				center + size/32,
+            ],
+      'y1': [
+				center,
+				center - size/32,
+				center - size/32,
+				center - size/32,
+				center,
+				center - size/32,
+				center - size/32,
+				center - size/32
+            ],
+      'x2': [
+				center,
+				diagonalMax,
+				horiVertMax,
+				diagonalMax,
+				center,
+				diagonalMin,
+				horiVertMin,
+				diagonalMin
+            ],
+      'y2': [
+				horiVertMin,
+				diagonalMin,
+				center,
+				diagonalMax,
+				horiVertMax,
+				diagonalMax,
+				center,
+				diagonalMin
+            ],
+      'x3': [
+				center + size/32,
+				center + size/32,
+				center,
+				center - size/32,
+				center + size/32,
+				center + size/32,
+				center,
+				center - size/32
+            ],
+      'y3': [
+				center,
+				center + size/32,
+				center + size/32,
+				center + size/32,
+				center,
+				center + size/32,
+				center + size/32,
+				center + size/32
+            ]
+    }
+	
+	//draw the circles that represent the saturation dimension
     stroke(0);
-
-    //outer circle
-    fill(0, 0, 0, 0.1875);
-    ellipse(center, center, circleSize);
-
-    //middle circle
-    fill(0, 0, 100, 0.625);
-    ellipse(center, center, circleSize / 2);
-
-    // //inner circle
-    fill(0, 0, 0, 0.375);
-    ellipse(center, center, circleSize / 4);
-
+	for(var i = 0; i < 3; i++){
+		fill(0, 0,satCircles['brightness'][i], satCircles['alpha'][i]);
+		ellipse(center, center, satCircles['size'][i]);
+	}
+    
     //draw the hexagon that represents the brightness dimension
     fill(0, 0, 0, brightnessTrans);
     hexagon(center, center, size/2);
-
-    //JSON objects used to store all the x and y positions of the triangles that represent the hue dimension
-    var positions = {
-      'x1': [
-              center - size/32,
-              center - size/32,
-              center,
-              center + size/32,
-              center - size/32,
-              center - size/32,
-              center,
-              center + size/32,
-            ],
-      'y1': [
-              center,
-              center - size/32,
-              center - size/32,
-              center - size/32,
-              center,
-              center - size/32,
-              center - size/32,
-              center - size/32
-            ],
-      'x2': [
-              center,
-              diagonalMax,
-              horiVertMax,
-              diagonalMax,
-              center,
-              diagonalMin,
-              horiVertMin,
-              diagonalMin
-            ],
-      'y2': [
-              horiVertMin,
-              diagonalMin,
-              center,
-              diagonalMax,
-              horiVertMax,
-              diagonalMax,
-              center,
-              diagonalMin
-            ],
-      'x3': [
-              center + size/32,
-              center + size/32,
-              center,
-              center - size/32,
-              center + size/32,
-              center + size/32,
-              center,
-              center - size/32
-            ],
-      'y3': [
-              center,
-              center + size/32,
-              center + size/32,
-              center + size/32,
-              center,
-              center + size/32,
-              center + size/32,
-              center + size/32
-            ]
-    }
-
-    angleMode(DEGREES);
-    translate(center, center);
-    //draw the 8 triangles that repressnt the hue dimension
-    //the colour and transparency level of the triangles is also affected by the brightness dimension
+	
+	//draw the stars that represent the hue dimension
     noStroke();
-    fill(0, 0, hueColour, 0.9);
+	angleMode(DEGREES);
+    translate(center, center);    
     rotate(hueDegree);
-    for($i = 0; $i < 8; $i++){
-      triangle(positions['x1'][$i]/3, positions['y1'][$i]/3, positions['x2'][$i]/3, positions['y2'][$i]/3, positions['x3'][$i]/3, positions['y3'][$i]/3);
-    }
-
+    
+	drawStar(Array(0, 0, hueColour, 0.9), positions, 3);
     translate(-center, -center);
-    //draw the 8 triangles that repressnt the hue dimension
-    //the colour and transparency level of the triangles is also affected by the brightness dimension
-    if(spot_hue && hueDegree < spot_hue + 45 && hueDegree > spot_hue - 45){
-      fill(spot_hue, 100, 100, hueTrans);
-    }
-    else {
-      fill(0, 0, 100, hueTrans);
-    }
-    for($i = 0; $i < 8; $i++){
-        triangle(positions['x1'][$i], positions['y1'][$i], positions['x2'][$i], positions['y2'][$i], positions['x3'][$i], positions['y3'][$i]);
-    }
-    // translate(center, center);
-    // //draw the 8 triangles that repressnt the hue dimension
-    // //the colour and transparency level of the triangles is also affected by the brightness dimension
-    // fill(0, 0, 0, 50);
-    // rotate(hueDegree);
-    // for($i = 0; $i < 8; $i++){
-    //   triangle(positions['x1'][$i]/3, positions['y1'][$i]/3, positions['x2'][$i]/3, positions['y2'][$i]/3, positions['x3'][$i]/3, positions['y3'][$i]/3);
-    // }
-    angleMode(RADIANS);
-
+	drawStar(Array(0, 0, 100, hueTrans), positions);
   }
 }
+
 /*
  * function to draw a hexagon shape
  * adapted from: https://p5js.org/examples/form-regular-polygon.html
+ * @param {Number} x       	- x-coordinate of the hexagon
+ * @param {Number} y    	- y-coordinate of the hexagon
+ * @param {Number} radius   - radius of the hexagon
  */
-function hexagon(x, y, radius, rotation) {
+function hexagon(x, y, radius) {
+  angleMode(RADIANS);
   var angle = TWO_PI / 8;
   beginShape();
   for (var a = TWO_PI/16; a < TWO_PI + TWO_PI/16; a += angle) {
@@ -187,3 +174,19 @@ function hexagon(x, y, radius, rotation) {
   }
   endShape(CLOSE);
 }
+
+/*
+ * function to draw the 8 triangles that repressnt the hue dimension
+ * the colour and transparency level of the triangles is also affected by the brightness dimension
+ * @param {Array}  hsba       		- Array of values used to set the values for the fill function
+ * @param {Object} positions    	- Object containing all the x and y positions of the 8 triangles that make up the star
+ * @param {Number} sizeReducer   	- Variable that allows the star to drawn at smaller size, should be greater than 1
+ */
+function drawStar(hsba, positions, sizeReducer = 1) {
+	fill(hsba[0], hsba[1], hsba[2], hsba[3]);
+	for($i = 0; $i < 8; $i++){
+	  triangle(positions['x1'][$i]/sizeReducer, positions['y1'][$i]/sizeReducer, positions['x2'][$i]/sizeReducer, positions['y2'][$i]/sizeReducer, positions['x3'][$i]/sizeReducer, positions['y3'][$i]/sizeReducer);
+    }
+}
+
+ 

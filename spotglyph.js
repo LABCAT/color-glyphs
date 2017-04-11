@@ -42,7 +42,6 @@ function SpotGlyph() {
     // }
     // translate(halfSize, halfSize);
     // rect(-sqSize/2, -sqSize/2, sqSize, sqSize);
-    var glyph = new GrayGlyph();
-    glyph.draw(values, size, this.spot_hue);
+
   }
 }
