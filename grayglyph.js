@@ -1,5 +1,5 @@
 function GrayGlyph() {
-  /*
+	/*
    * values is an array of 3 numbers: [hue, saturation, brightness]
    *   + hue ranges from 0..360
    *   + saturation ranges from 0..100
@@ -22,7 +22,15 @@ function GrayGlyph() {
    *       - fill(0, 0, 51);    // equivalent to above
    *       - stroke(0, 0, 100); //
    */
-  this.draw = function(values, size) {
+  
+  /*
+   * I have added additional parameters to this functionality so this function can also be used in the draw function of the SpotGlyph object
+   * The additional parameters I have added are as follows:
+   * @param {Number}  spot_hue       - value of the hue - a number between 0 and 359
+   * @param {Number}  spotMin    	 - minimum hue value that determines whether or not to use the spot_hue - a number between 0 and 359
+   * @param {Number}  spotMax   	 - maximum hue value that determines whether or not to use the spot_hue - a number between 0 and 359
+   */
+  this.draw = function(values, size, spot_hue = 0, spotMin = 0, spotMax = 0) {
     //determine the center of the circle
     var center = size/2;
 
@@ -150,9 +158,27 @@ function GrayGlyph() {
     translate(center, center);    
     rotate(hueDegree);
     
+	var hsba = Array(0, 0, 100, hueTrans);
+
+	//if the draw function has been passed a value for spot_hue we may want to change the values of the hsba array
+	if(spot_hue){
+		//if hueDegree is within the required range then use it as the hue value in the hsba array
+		if(hueDegree <= spotMax && hueDegree >= spotMin){
+			hsba = Array(spot_hue, 100, 100, hueTrans);
+		}
+		//if spotMin is greater than spotMax then the above comparison won't work
+		//instead compare if the hueDegree is greater than spotMax or less than spotMin
+		if(spotMin > spotMax){
+			if(hueDegree <= spotMax || hueDegree >= spotMin) {
+				hsba = Array(spot_hue, 100, 100, hueTrans);
+			}
+		}
+		
+    }
+	
 	drawStar(Array(0, 0, hueColour, 0.9), positions, 3);
     translate(-center, -center);
-	drawStar(Array(0, 0, 100, hueTrans), positions);
+	drawStar(hsba, positions);
   }
 }
 
