@@ -1,6 +1,4 @@
-## PS2 MDDN 242 2017
-
-### Color Glyphs - Final Summary
+## Color Glyphs
 
 ![alt text](https://raw.githubusercontent.com/LABCAT/color-glyphs/master/preview.jpg)
 
