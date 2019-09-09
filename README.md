@@ -2,6 +2,8 @@
 
 ### Color Glyphs - Final Summary
 
+![alt text](https://raw.githubusercontent.com/LABCAT/color-glyphs/master/preview.jpg)
+
 The most satisfying part of this project is how the glyph has evolved from the initial sketch. At first I was unsure of how to represent the colour red and initially used a danger symbol. However I wasn't satisfied so kept looking for inspiration which I found in Japan's Rising Sun flag.  The resulting glyph has served as the inspiration for all parts of the project even though it has evolved into something quite different than the original sketch. 
 
 As part of the assignment we learnt about colour models. A key takeaway for me was that the saturation dimension determines the purity of a colour.  I decided I wanted my glyph to represent this and have designed my glyphs so they are in their most pure form when the saturation level is set to 100%.
