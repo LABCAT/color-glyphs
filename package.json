@@ -22,7 +22,6 @@
   },
   "homepage": "https://labcat.github.io/color-glyphs/",
   "devDependencies": {
-    "vite": "^7.1.1",
-    "vite-plugin-static-copy": "^3.1.1"
+    "vite": "^7.1.1"
   }
 }
