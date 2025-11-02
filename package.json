@@ -1,0 +1,28 @@
+{
+  "name": "workspace",
+  "version": "1.0.0",
+  "description": "![alt text](https://raw.githubusercontent.com/LABCAT/color-glyphs/master/preview.jpg)",
+  "main": ".purview_helper.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "deploy": "pnpm run build && gh-pages -d dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LABCAT/color-glyphs.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LABCAT/color-glyphs/issues"
+  },
+  "homepage": "https://labcat.github.io/color-glyphs/",
+  "devDependencies": {
+    "vite": "^7.1.1",
+    "gh-pages": "^6.1.1"
+  }
+}
