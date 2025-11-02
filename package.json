@@ -2,7 +2,7 @@
   "name": "workspace",
   "version": "1.0.0",
   "description": "![alt text](https://raw.githubusercontent.com/LABCAT/color-glyphs/master/preview.jpg)",
-  "main": ".purview_helper.js",
+  "main": "public/purview_helper.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "vite",
